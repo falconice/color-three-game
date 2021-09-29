@@ -1,0 +1,40 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe сборка активного файла",
+            "command": "C:\\Program Files (x86)\\MinGW\\mingw32\\bin\\g++.exe",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\sfml_dll\\${fileBasenameNoExtension}.exe",
+
+                "-I",
+                "C:\\SFML\\SFML-source\\include",
+                "-L",
+                "C:\\SFML\\SFML-source\\build\\lib",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-audio",
+                "-lsfml-network",
+                "-lsfml-system"
+            ],
+            "options": {
+               // "cwd": "${workspaceFolder}"
+               "cwd": "C:\\Program Files (x86)\\MinGW\\mingw32\\bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+
+
+            "detail": "Задача создана отладчиком."
+        }
+    ],
+    "version": "2.0.0"
+}
