@@ -8,26 +8,34 @@ class Card
 {
 
 private:
-    Sprite cardSprite;
-    Texture cardTexture;
     std::string texturePath;
 
     int type;
-    float x, y;
+    float positionX;
+    float positionY;
+
+    int cardId;
+
     void setCardTexture(String texturePath)
     {
         this->texturePath = texturePath;
-        cardTexture.loadFromFile(texturePath);
-        cardSprite.setTexture(cardTexture);
     };
 
 public:
     Card(){};
 
-    std::string getPath()
+    //--------SET-----///
+
+    void setCardId(int id)
     {
-        return this->texturePath;
-    }
+        this->cardId = id;
+    };
+
+    void setCardPosition(int x, int y)
+    {
+        this->positionY = y;
+        this->positionX = x;
+    };
 
     void setCardType(int type)
     {
@@ -51,31 +59,34 @@ public:
         };
     };
 
-    void setCardPosition(int x, int y)
-    {
-        cardSprite.setPosition(x, y);
-        this->y = y;
-        this->x = x;
-    };
-
-    Sprite getCardSprite()
-    {
-        return this->cardSprite;
-    }
-
-    // Sprite &getCardSprite()
-    // {
-    //     return this->card;
-    // }
+    //--------GET-----///
 
     int getCardX()
     {
-        return this->x;
+        return this->positionX;
     }
 
-     int getCardY()
+    int getCardY()
     {
-        return this->y;
+        return this->positionY;
+    }
+
+    int getCardId()
+    {
+        return this->cardId;
+    }
+
+    std::string getPath()
+    {
+        return this->texturePath;
+    }
+
+    //--------OTHER-----///
+
+    void changeCardPosition(float newX, float newY)
+    {
+        this->positionX = newX;
+        this->positionY = newY;
     }
 };
 
