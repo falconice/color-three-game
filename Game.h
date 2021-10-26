@@ -15,14 +15,43 @@ class Game
 
 private:
     int counter;
-    //массив карточек
+
+    //Card array
     std::vector<Card> cardPack;
+
     Sprite field;
     Texture fieldTexture;
     Sprite testSprite;
     Texture testSpriteTexture;
 
+    /*Card textures*/
+
+    Texture redCardTexture;
+    Texture yellowCardTexture;
+    Texture greenCardTexture;
+    Texture emptyCardTexture;
+
     int gameStarted = 0;
+
+   const Texture &textureByType(int type) const
+    {
+        if (type == 0)
+        {
+            return emptyCardTexture;
+        }
+        else if (type == 1)
+        {
+            return redCardTexture;
+        }
+        else if (type == 2)
+        {
+            return yellowCardTexture;
+        }
+        else if (type == 3)
+        {
+            return greenCardTexture;
+        };
+    }
 
     Card &getCardById(int id)
     {
@@ -126,6 +155,11 @@ private:
 public:
     Game()
     {
+        //set cards textures
+        redCardTexture.loadFromFile("card\\card_textures\\RedCard.png");
+        yellowCardTexture.loadFromFile("card\\card_textures\\YellowCard.png");
+        greenCardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
+        emptyCardTexture.loadFromFile("card\\card_textures\\Empty.png");
     }
 
     void launchGame()
@@ -195,8 +229,13 @@ public:
                         this->cardPack.at(counter).setCardPosition(x, y);
                         this->cardPack.at(counter).setCardId(counter);
 
-                        testSpriteTexture.loadFromFile(this->cardPack.at(counter).getPath());
-                        testSprite.setTexture(testSpriteTexture);
+                       
+
+                       //add texture by type
+                       // testSpriteTexture.loadFromFile(this->cardPack.at(counter).getPath());
+                        testSprite.setTexture(textureByType(cardPack.at(counter).getCardType()));
+
+
                         testSprite.setPosition(cardPack.at(counter).getCardX(),
                                                cardPack.at(counter).getCardY());
 

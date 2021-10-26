@@ -81,6 +81,11 @@ public:
         return this->texturePath;
     }
 
+    int getCardType()
+    {
+        return this->type;
+    }
+
     //--------OTHER-----///
 
     void changeCardPosition(float newX, float newY)
