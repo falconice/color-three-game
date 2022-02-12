@@ -7,6 +7,8 @@
 #include <random>
 
 #include "card/Card.h"
+#include "card/CardPack.h"
+#include "field/CardField.h"
 
 using namespace sf;
 
@@ -17,10 +19,14 @@ private:
     int counter;
 
     //Card array
-    std::vector<Card> cardPack;
+    // std::vector<Card> cardPack;
+    CardPack cardPackClass;
 
     Sprite field;
     Texture fieldTexture;
+
+    CardField cardField;
+
     Sprite testSprite;
     Texture testSpriteTexture;
 
@@ -33,7 +39,7 @@ private:
 
     int gameStarted = 0;
 
-   const Texture &textureByType(int type) const
+    const Texture &textureByType(int type) const
     {
         if (type == 0)
         {
@@ -47,16 +53,16 @@ private:
         {
             return yellowCardTexture;
         }
-        else if (type == 3)
+        else
         {
             return greenCardTexture;
         };
-    }
+    };
 
     Card &getCardById(int id)
     {
 
-        for (Card &card : cardPack)
+        for (Card &card : cardPackClass.getCardPack())
         {
             if (card.getCardId() == id)
             {
@@ -72,7 +78,7 @@ private:
         int leftX, rightX;
         int leftY, rightY;
 
-        for (Card &card : cardPack)
+        for (Card &card : cardPackClass.getCardPack())
         {
             //обозначаем границы карточки
             leftX = card.getCardX();
@@ -94,8 +100,8 @@ private:
     void swapCardsById(RenderWindow *window, int firstId, int secondId)
     {
 
-        Card cardFirst = getCardById(firstId);
-        Card cardSecond = getCardById(secondId);
+        Card &cardFirst = getCardById(firstId);
+        Card &cardSecond = getCardById(secondId);
 
         int firstX, firstY;
         int secondX, secondY;
@@ -141,16 +147,11 @@ private:
             first.setPosition(firstX, firstY);
             second.setPosition(secondX, secondY);
 
-            window->clear();
+            // window->clear();
             window->draw(first);
             window->draw(second);
         }
     };
-
-    // void startGamePack(RenderWindow *window)
-    // {
-    //     int gameStarted = 1;
-    // };
 
 public:
     Game()
@@ -159,12 +160,12 @@ public:
         redCardTexture.loadFromFile("card\\card_textures\\RedCard.png");
         yellowCardTexture.loadFromFile("card\\card_textures\\YellowCard.png");
         greenCardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
-        emptyCardTexture.loadFromFile("card\\card_textures\\Empty.png");
+        emptyCardTexture.loadFromFile("card\\card_textures\\Empty4.png");
     }
 
     void launchGame()
     {
-        RenderWindow window(VideoMode().getDesktopMode(), "Three colours", Style::Fullscreen); //
+        RenderWindow window(VideoMode().getDesktopMode(), "Three colours"); //, Style::Fullscreen
 
         int idFirst = -1;
         int idSecond = -1;
@@ -185,35 +186,20 @@ public:
             Card card;
             card.setCardType(x);
             std::cout << card.getCardX();
-            cardPack.push_back(card);
-
-            // std::cout << ' ' << x;
-            // std::cout << '\n';
+            cardPackClass.getCardPack().push_back(card);
         }
 
-        // Sprite field;
-        // Texture fieldTexture;
+        //This part (instead of CardFied Claas!) loads field
+        // fieldTexture.loadFromFile("field\\field_1920_1080.png");
+        // field.setTexture(fieldTexture);
+        // field.setPosition(0, 0);
 
-        fieldTexture.loadFromFile("field\\field_1920_1080.png");
-        field.setTexture(fieldTexture);
-        field.setPosition(0, 0);
+        window.clear();
 
-        // Sprite card;
-        // Texture cardTexture;
-
-        // cardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
-        // card.setTexture(cardTexture);
-
-        // Sprite testSprite;
-        // Texture testSpriteTexture;
         while (window.isOpen())
-        { //if (gameStarted == 0)
-            //     {
-            //         startGamePack(&window);
-            //     }
+        {
 
-            window.clear();
-            window.draw(field); //рисуем основное поле
+            window.draw(cardField.getSprite()); //draw background field
 
             counter = 0;
 
@@ -225,19 +211,15 @@ public:
                     if (!((y == 302 && (x == 672 || x == 1056)) ||
                           (y == 686 && (x == 672 || x == 1056))))
                     {
-                        //задаем позицию карточки
-                        this->cardPack.at(counter).setCardPosition(x, y);
-                        this->cardPack.at(counter).setCardId(counter);
+                        // //задаем позицию карточки
+                        // this->cardPackClass.getCardPack().at(counter).setCardPosition(x, y);
+                        // this->cardPackClass.getCardPack().at(counter).setCardId(counter);
 
-                       
+                        //add texture by type
+                        testSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
 
-                       //add texture by type
-                       // testSpriteTexture.loadFromFile(this->cardPack.at(counter).getPath());
-                        testSprite.setTexture(textureByType(cardPack.at(counter).getCardType()));
-
-
-                        testSprite.setPosition(cardPack.at(counter).getCardX(),
-                                               cardPack.at(counter).getCardY());
+                        testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
+                                               cardPackClass.getCardPack().at(counter).getCardY());
 
                         // std::cout << cardPack.getCard(counter).getCardX();
 
@@ -254,11 +236,8 @@ public:
             //получение координат мышки относительно окна игры
             sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
-            //std::cout << "0) " << flag << " " << idFirst << " " << idSecond << "\n";
-
             while (window.pollEvent(event))
             {
-                // std::cout << "1) " << idFirst << " " << idSecond << "\n";
 
                 if (Mouse::isButtonPressed(Mouse::Left) && flag == 0)
                 {
@@ -268,23 +247,23 @@ public:
                 else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 1)
                 {
                     idFirst = getCardIdFromMouse(localPosition);
-                    idSecond = idFirst;
-                    flag = 2;
+                    if (idFirst != -1)
+                    {
+                        idSecond = idFirst;
+                        flag = 2;
+                    }
                 }
                 else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
                 {
 
                     idFirst = getCardIdFromMouse(localPosition);
-                    std::cout << "3) " << flag << " " << idFirst << " " << idSecond << "\n";
+                    if (idFirst != -1 && idSecond !=idFirst)
+                    {
+                        std::cout << "3) " << flag << " " << idFirst << " " << idSecond << "\n";
 
-                    swapCardsById(&window, idFirst, idSecond);
-                    flag = 0;
-
-                    //std::cout << getCardIdFromMouse(localPosition) << "\n";
-                    // std::cout << idFirst << " " << idSecond << "\n";
-                    // cardTexture.loadFromFile("card\\card_textures\\CardBlocked.png");
-                    // card.setTexture(cardTexture);
-                    // window.draw(card);
+                        swapCardsById(&window, idFirst, idSecond);
+                        flag = 0;
+                    }
                 };
 
                 //Закрыть окно

@@ -14,12 +14,13 @@ using namespace sf;
 class CardPack
 {
 private:
-    std::vector<Card> cardPack; //массив карточек
-    int counter;
+    //card array
+    std::vector<Card> cardPack;
+    int packSize;
 
     void cardShuffle()
     {
-        //перемешиваем карточки
+        //shuffle cards
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
@@ -40,9 +41,9 @@ private:
 
     void setPackPositions()
     {
-        counter = 0;
+        packSize = 0;
 
-        //цикл для выставление позиций !игровым! карточками
+        //set positions for playable cards
         for (int y = 110; y < 1069; y = y + 192)
         {
             for (int x = 480; x < 1438; x = x + 192)
@@ -50,10 +51,10 @@ private:
                 if (!((y == 302 && (x == 672 || x == 1056)) ||
                       (y == 686 && (x == 672 || x == 1056))))
                 {
-                    //задаем позицию и ID карточки
-                    this->cardPack.at(counter).setCardPosition(x, y);
-                    this->cardPack.at(counter).setCardId(counter);
-                    counter = counter + 1;
+                    //set position and Id
+                    this->cardPack.at(packSize).setCardPosition(x, y);
+                    this->cardPack.at(packSize).setCardId(packSize);
+                    packSize++;
                 }
             }
         }
@@ -66,10 +67,15 @@ public:
         setPackPositions();
     };
 
-    std::vector<Card> getCardPack(){
-       return this->cardPack;
+    std::vector<Card> &getCardPack()
+    {
+        return this->cardPack;
     }
 
+    int getPackSize()
+    {
+        return this->packSize;
+    }
 };
 
 #endif

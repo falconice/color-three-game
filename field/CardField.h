@@ -1,4 +1,5 @@
-//класс, отвечающий за расстановкиу карт на поле и обновление поля
+//класс, отвечающий за расстановкиу карт на поле и обновление поля ???
+//UPD: Class -- loader of Game Field. Only field!
 #ifndef CARD_FIELD_H
 #define CARD_FIELD_H
 
@@ -20,7 +21,7 @@ private:
 public:
     CardField()
     {
-        fieldTexture.loadFromFile("field\\field_1920_1080.png");
+        fieldTexture.loadFromFile("field\\field_1920_1080_ver2.png");
         fieldSprite.setTexture(fieldTexture);
         fieldSprite.setPosition(0, 0);
     };
