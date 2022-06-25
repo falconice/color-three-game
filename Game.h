@@ -18,8 +18,6 @@ class Game
 private:
     int counter;
 
-    //Card array
-    // std::vector<Card> cardPack;
     CardPack cardPackClass;
 
     Sprite field;
@@ -156,7 +154,7 @@ private:
 public:
     Game()
     {
-        //set cards textures
+        // set cards textures
         redCardTexture.loadFromFile("card\\card_textures\\RedCard.png");
         yellowCardTexture.loadFromFile("card\\card_textures\\YellowCard.png");
         greenCardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
@@ -179,8 +177,6 @@ public:
 
         std::shuffle(fullPack.begin(), fullPack.end(), std::default_random_engine(seed));
 
-        //std::cout << "shuffled elements:";
-
         for (int &x : fullPack)
         {
             Card card;
@@ -189,17 +185,12 @@ public:
             cardPackClass.getCardPack().push_back(card);
         }
 
-        //This part (instead of CardFied Claas!) loads field
-        // fieldTexture.loadFromFile("field\\field_1920_1080.png");
-        // field.setTexture(fieldTexture);
-        // field.setPosition(0, 0);
-
         window.clear();
 
         while (window.isOpen())
         {
 
-            window.draw(cardField.getSprite()); //draw background field
+            window.draw(cardField.getSprite()); // draw background field
 
             counter = 0;
 
@@ -211,17 +202,12 @@ public:
                     if (!((y == 302 && (x == 672 || x == 1056)) ||
                           (y == 686 && (x == 672 || x == 1056))))
                     {
-                        // //задаем позицию карточки
-                        // this->cardPackClass.getCardPack().at(counter).setCardPosition(x, y);
-                        // this->cardPackClass.getCardPack().at(counter).setCardId(counter);
 
-                        //add texture by type
+                        // add texture by type
                         testSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
 
                         testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
                                                cardPackClass.getCardPack().at(counter).getCardY());
-
-                        // std::cout << cardPack.getCard(counter).getCardX();
 
                         //рисуем карточки
                         window.draw(testSprite);
@@ -257,7 +243,7 @@ public:
                 {
 
                     idFirst = getCardIdFromMouse(localPosition);
-                    if (idFirst != -1 && idSecond !=idFirst)
+                    if (idFirst != -1 && idSecond != idFirst)
                     {
                         std::cout << "3) " << flag << " " << idFirst << " " << idSecond << "\n";
 

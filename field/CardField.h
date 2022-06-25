@@ -3,10 +3,10 @@
 #ifndef CARD_FIELD_H
 #define CARD_FIELD_H
 
-#include <iostream>
+// #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <chrono>
-#include <random>
+// #include <chrono>
+// #include <random>
 
 #include "../card/Card.h"
 

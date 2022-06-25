@@ -2,8 +2,8 @@
 #ifndef CARD_PACK_H
 #define CARD_PACK_H
 
-#include <iostream>
-#include <SFML/Graphics.hpp>
+// #include <iostream>
+// #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <random>
 
