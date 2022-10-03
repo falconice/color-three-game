@@ -23,7 +23,7 @@ public:
     {
         fieldTexture.loadFromFile("field\\field_1920_1080_ver2.png");
         fieldSprite.setTexture(fieldTexture);
-        fieldSprite.setPosition(0, 0);
+        fieldSprite.setPosition({ 0, 0 });
     };
 
     Sprite getSprite()

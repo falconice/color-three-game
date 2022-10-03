@@ -101,9 +101,9 @@ private:
         Card &cardFirst = getCardById(firstId);
         Card &cardSecond = getCardById(secondId);
 
-        int firstX, firstY;
-        int secondX, secondY;
-        int tempX, tempY;
+        float firstX, firstY;
+        float secondX, secondY;
+        float tempX, tempY;
 
         firstX = cardFirst.getCardX();
         firstY = cardFirst.getCardY();
@@ -142,8 +142,8 @@ private:
             std::cout << "\nSWAP 1 TO--> " << firstX << " " << firstY << "\n";
             std::cout << "\nSWAP 2 TO --> " << secondX << " " << secondY << "\n";
 
-            first.setPosition(firstX, firstY);
-            second.setPosition(secondX, secondY);
+            first.setPosition({ firstX, firstY });
+            second.setPosition({secondX, secondY});
 
             // window->clear();
             window->draw(first);
@@ -206,8 +206,8 @@ public:
                         // add texture by type
                         testSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
 
-                        testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
-                                               cardPackClass.getCardPack().at(counter).getCardY());
+                        testSprite.setPosition({ cardPackClass.getCardPack().at(counter).getCardX(),
+                                               cardPackClass.getCardPack().at(counter).getCardY() });
 
                         //рисуем карточки
                         window.draw(testSprite);

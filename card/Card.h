@@ -31,7 +31,7 @@ public:
         this->cardId = id;
     };
 
-    void setCardPosition(int x, int y)
+    void setCardPosition(float x, float y)
     {
         this->positionY = y;
         this->positionX = x;
@@ -61,12 +61,12 @@ public:
 
     //--------GET-----///
 
-    int getCardX()
+    float getCardX()
     {
         return this->positionX;
     }
 
-    int getCardY()
+    float getCardY()
     {
         return this->positionY;
     }
