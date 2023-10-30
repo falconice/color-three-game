@@ -78,7 +78,7 @@ private:
 
         for (Card &card : cardPackClass.getCardPack())
         {
-            //обозначаем границы карточки
+            // обозначаем границы карточки
             leftX = card.getCardX();
             leftY = card.getCardY();
 
@@ -142,8 +142,8 @@ private:
             std::cout << "\nSWAP 1 TO--> " << firstX << " " << firstY << "\n";
             std::cout << "\nSWAP 2 TO --> " << secondX << " " << secondY << "\n";
 
-            first.setPosition(firstX, firstY);
-            second.setPosition(secondX, secondY);
+            // first.setPosition(firstX, firstY);
+            // second.setPosition(secondX, secondY);
 
             // window->clear();
             window->draw(first);
@@ -194,7 +194,7 @@ public:
 
             counter = 0;
 
-            //цикл для заполнения поля !игровыми! карточками
+            // цикл для заполнения поля !игровыми! карточками
             for (int y = 110; y < 1069; y = y + 192)
             {
                 for (int x = 480; x < 1438; x = x + 192)
@@ -206,10 +206,10 @@ public:
                         // add texture by type
                         testSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
 
-                        testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
-                                               cardPackClass.getCardPack().at(counter).getCardY());
+                     //   testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
+                                             //  cardPackClass.getCardPack().at(counter).getCardY());
 
-                        //рисуем карточки
+                        // рисуем карточки
                         window.draw(testSprite);
 
                         counter = counter + 1;
@@ -219,7 +219,7 @@ public:
 
             Event event;
 
-            //получение координат мышки относительно окна игры
+            // получение координат мышки относительно окна игры
             sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
             while (window.pollEvent(event))
@@ -252,7 +252,7 @@ public:
                     }
                 };
 
-                //Закрыть окно
+                // Закрыть окно
                 if (event.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape)))
                 {
                     window.close();
