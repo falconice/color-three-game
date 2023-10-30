@@ -43,7 +43,7 @@ public:
 
         if (type == 0)
         {
-            this->setCardTexture("card\\card_textures\\Empty.png");
+            this->setCardTexture("card\\card_textures\\Empty4.png");
         }
         else if (type == 1)
         {
