@@ -37,13 +37,14 @@ public:
         this->positionX = x;
     };
 
+    //  set path to texture by type
     void setCardType(int type)
     {
         this->type = type;
 
         if (type == 0)
         {
-            this->setCardTexture("card\\card_textures\\Empty4.png");
+            this->setCardTexture("card\\card_textures\\Empty_3.png");
         }
         else if (type == 1)
         {

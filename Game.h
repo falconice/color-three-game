@@ -32,30 +32,49 @@ private:
 
     /*Card textures*/
 
-    Texture redCardTexture;
-    Texture yellowCardTexture;
-    Texture greenCardTexture;
-    Texture emptyCardTexture;
+    Texture redTexture;
+    Texture yellowTexture;
+    Texture greenTexture;
+    Texture emptyTexture;
 
+    /*Beacons */
+    Sprite redBe;
+    Texture redBeTexture;
+
+    Sprite yellowBe;
+    Texture yellowBeTexture;
+
+    Sprite greenBe;
+    Texture greenBeTexture;
+
+    Sprite win;
+    Texture winTexture;
+    /*-------------------------------*/
     int gameStarted = 0;
+
+    int winIndexRed = 480;    // type == 1
+    int winIndexYellow = 864; // type == 2
+    int winIndexGreen = 1248; // type == 3
+
+    int red = 0, yellow = 0, green = 0;
 
     const Texture &textureByType(int type) const
     {
         if (type == 0)
         {
-            return emptyCardTexture;
+            return emptyTexture;
         }
         else if (type == 1)
         {
-            return redCardTexture;
+            return redTexture;
         }
         else if (type == 2)
         {
-            return yellowCardTexture;
+            return yellowTexture;
         }
         else
         {
-            return greenCardTexture;
+            return greenTexture;
         };
     };
 
@@ -185,14 +204,9 @@ private:
         }
     };
 
-    void winCheck()
+    bool winCheck()
     {
-        int winIndexRed = 480;    // type == 1
-        int winIndexYellow = 864; // type == 2
-        int winIndexGreen = 1248; // type == 3
-
-        int red = 0, yellow = 0, green = 0;
-
+        red = 0, yellow = 0, green = 0;
         for (Card &card : cardPackClass.getCardPack())
         {
             if (card.getCardType() == 1 && card.getCardX() == winIndexRed)
@@ -209,50 +223,84 @@ private:
             }
         };
 
-        if (red == 5)
+        if (red == 5 && yellow == 5 && green == 5)
         {
+
+            return true;
+        }
+        return false;
+    };
+
+    void winDisplay(RenderWindow *window)
+    {
+        if (red % 5 == 0 && red != 0)
+        {
+            redBe.setPosition({460.0, 0.0});
+            window->draw(redBe);
             std::cout << " . * + red complete * . +  \n";
         }
 
-        if (yellow == 5)
+        if (yellow % 5 == 0 && yellow != 0)
         {
+            yellowBe.setPosition({810.0, 0.0});
+            window->draw(yellowBe);
             std::cout << " + * + yellow complete + . *   \n";
         }
 
-        if (green == 5)
+        if (green % 5 == 0 && green != 0)
         {
+            greenBe.setPosition({1160.0, 0.0});
+            window->draw(greenBe);
             std::cout << " * + . green complete + * .   \n";
         }
 
-        if (red == 5 && yellow == 5 && green == 5)
+        if (red % 5 == 0 && yellow % 5 == 0 && green % 5 == 0 && green != 0 && yellow != 0 && red != 0)
         {
+            redBe.setPosition({460.0, 0.0});
+            window->draw(redBe);
+            yellowBe.setPosition({810.0, 0.0});
+            window->draw(yellowBe);
+            greenBe.setPosition({1160.0, 0.0});
+            window->draw(greenBe);
+
+            win.setPosition({0.0, 0.0});
+            window->draw(win);
+
             std::cout << "\n   WIN WIN WIN   \n";
-        }
-        else
-        {
-            std::cerr << "...next step...\n\n";
         }
     };
 
 public:
     Game()
     {
-        // set cards textures
-        redCardTexture.loadFromFile("card\\card_textures\\RedCard.png");
-        yellowCardTexture.loadFromFile("card\\card_textures\\YellowCard.png");
-        greenCardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
-        emptyCardTexture.loadFromFile("card\\card_textures\\Empty4.png");
+        // set  textures
+        redTexture.loadFromFile("card\\card_textures\\RedCard.png");
+        yellowTexture.loadFromFile("card\\card_textures\\YellowCard_3.png");
+        greenTexture.loadFromFile("card\\card_textures\\GreenCard_2.png");
+        emptyTexture.loadFromFile("card\\card_textures\\Empty_3.png");
+
+        redBeTexture.loadFromFile("field\\beacon\\RedBeacon_.png");
+        yellowBeTexture.loadFromFile("field\\beacon\\YellowBeacon_.png");
+        greenBeTexture.loadFromFile("field\\beacon\\GreenBeacon_.png");
+        winTexture.loadFromFile("card\\card_textures\\win_screeen_1.png");
+
+        redBe.setTexture(redBeTexture);
+        yellowBe.setTexture(yellowBeTexture);
+        greenBe.setTexture(greenBeTexture);
+        win.setTexture(winTexture);
     }
 
     void launchGame()
     {
-        RenderWindow window(sf::VideoMode({1920, 1080}), "Three colours", Style::Titlebar); // videomode, name, Style::Fullscreen
-                                                                                            //  VideoMode({1920, 1080})
+        RenderWindow window(sf::VideoMode({1920, 1080}), "Three colours", Style::Close); // videomode, name, Style::Fullscreen
+                                                                                         //  VideoMode({1920, 1080})
         int idFirst = -1;
         int idSecond = -1;
 
         window.clear();
         int flag = 0;
+
+        int check = 0;
 
         while (window.isOpen())
         {
@@ -291,44 +339,51 @@ public:
 
             while (window.pollEvent(event))
             {
-
-                if (Mouse::isButtonPressed(Mouse::Left) && flag == 0)
+                if (check == false)
                 {
-
-                    flag = 1;
-                    std::cout << "START: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
-                }
-                else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 1)
-                {
-                    idFirst = getCardIdFromMouse(localPosition);
-                    if (idFirst != -1)
+                    if (Mouse::isButtonPressed(Mouse::Left) && flag == 0)
                     {
-                        idSecond = idFirst;
-                        flag = 2;
-                    }
-                    std::cout << " 1) first step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
-                }
-                else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
-                {
 
-                    idFirst = getCardIdFromMouse(localPosition);
-                    if (idFirst != -1 && idSecond != idFirst)
+                        flag = 1;
+                        std::cout << "START: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+                    }
+                    else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 1)
                     {
-                        std::cout << " 2) second step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
-
-                        swapCardsById(&window, idFirst, idSecond);
-                        flag = 0;
-                        // std::cout << " after swap check: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
-                        winCheck();
+                        idFirst = getCardIdFromMouse(localPosition);
+                        if (idFirst != -1)
+                        {
+                            idSecond = idFirst;
+                            flag = 2;
+                        }
+                        std::cout << " 1) first step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
                     }
-                };
+                    else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
+                    {
+
+                        idFirst = getCardIdFromMouse(localPosition);
+                        if (idFirst != -1 && idSecond != idFirst)
+                        {
+                            std::cout << " 2) second step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+
+                            swapCardsById(&window, idFirst, idSecond);
+                            flag = 0;
+                            // std::cout << " after swap check: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+                            check = winCheck();
+                            // winCheck(&window);
+                        }
+                    };
+                }
 
                 // Close window
                 if (event.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape)))
                 {
                     window.close();
                 };
+
+                // check = winCheck();
             }
+
+            winDisplay(&window);
 
             window.display();
         };
