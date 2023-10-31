@@ -246,11 +246,10 @@ public:
 
     void launchGame()
     {
-        RenderWindow window(VideoMode({1920, 1080}), "Three colours"); //, Style::Fullscreen
-
+        RenderWindow window(sf::VideoMode({1920, 1080}), "Three colours", Style::Titlebar); // videomode, name, Style::Fullscreen
+                                                                                            //  VideoMode({1920, 1080})
         int idFirst = -1;
         int idSecond = -1;
-
 
         window.clear();
         int flag = 0;
