@@ -125,31 +125,57 @@ private:
         std::cout << "\nSWAP card_1 FROM --> " << firstId << " " << firstX << " " << firstY << "\n";
         std::cout << "\nSWAP card_2 FROM --> " << secondId << " " << secondX << " " << secondY << "\n";
 
-        if (((firstX + CONST_SIZE) == secondX) ||
-            ((firstX - CONST_SIZE) == secondX) ||
-            ((firstY + CONST_SIZE) == secondY) ||
-            ((firstY - CONST_SIZE) == secondY))
+        bool upX = 0;
+        bool upY = 0;
+        bool downX = 0;
+        bool downY = 0;
+
+        if ((firstX + CONST_SIZE) == secondX)
         {
-            tempX = firstX;
-            firstX = secondX;
-            secondX = tempX;
+            upX = 1;
+        }
 
-            tempY = firstY;
-            firstY = secondY;
-            secondY = tempY;
+        if ((firstX - CONST_SIZE) == secondX)
+        {
+            downX = 1;
+        }
 
-            cardFirst.changeCardPosition(firstX, firstY);
-            cardSecond.changeCardPosition(secondX, secondY);
+        if ((firstY + CONST_SIZE) == secondY)
+        {
+            upY = 1;
+        }
 
-            std::cout << "\nSWAP card_1 TO--> " << firstX << " " << firstY << "\n";
-            std::cout << "\nSWAP card_2 TO --> " << secondX << " " << secondY << "\n";
+        if ((firstY - CONST_SIZE) == secondY)
+        {
+            downY = 1;
+        }
 
-            first.setPosition({firstX, firstY});
-            second.setPosition({secondX, secondY});
+        if (!(upX && upY || downX && downY || upX && downY || downX && upY))
+        {
 
-            // window->clear();
-            window->draw(first);
-            window->draw(second);
+            if (upY || upX || downY || downX)
+            {
+                tempX = firstX;
+                firstX = secondX;
+                secondX = tempX;
+
+                tempY = firstY;
+                firstY = secondY;
+                secondY = tempY;
+
+                cardFirst.changeCardPosition(firstX, firstY);
+                cardSecond.changeCardPosition(secondX, secondY);
+
+                std::cout << "\nSWAP card_1 TO--> " << firstX << " " << firstY << "\n";
+                std::cout << "\nSWAP card_2 TO --> " << secondX << " " << secondY << "\n";
+
+                first.setPosition({firstX, firstY});
+                second.setPosition({secondX, secondY});
+
+                // window->clear();
+                window->draw(first);
+                window->draw(second);
+            }
         }
     };
 
@@ -244,7 +270,7 @@ public:
                     }
                     std::cout << "!First step: " << flag << " " << idFirst << " " << idSecond << "\n";
                 }
-                else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 2)
+                else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
                 {
 
                     idFirst = getCardIdFromMouse(localPosition);
@@ -254,6 +280,7 @@ public:
 
                         swapCardsById(&window, idFirst, idSecond);
                         flag = 0;
+                        std::cout << "after swap step:" << flag << " " << idFirst << " " << idSecond << "\n";
                     }
                 };
 
