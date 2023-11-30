@@ -150,31 +150,20 @@ private:
         bool downX = 0;
         bool downY = 0;
 
-        // forbid to jump over 1+ cards
-        if ((firstX + CONST_SIZE) <= secondX)
-        {
-            upX = 1;
-        }
+        // coefficients which help to protect from jumping over 1+ cards
+        double coef_x = 0;
+        double coef_y = 0;
 
-        if ((firstX - CONST_SIZE) >= secondX)
-        {
-            downX = 1;
-        }
+        coef_x = (firstX - secondX) / CONST_SIZE;
+        coef_y = (firstY - secondY) / CONST_SIZE;
 
-        if ((firstY + CONST_SIZE) <= secondY)
+        if (((coef_x == 1 || coef_x == -1) && coef_y == 0) ||
+            (coef_x == 0 && (coef_y == 1 || coef_y == -1)))
         {
-            upY = 1;
-        }
+            std::cout << " SWAAAAAAAAP : \n";
+            std::cout << "   coef_x : " << coef_x << "\n";
+            std::cout << "   coef_y : " << coef_y << "\n";
 
-        if ((firstY - CONST_SIZE) >= secondY)
-        {
-            downY = 1;
-        }
-
-        if (!(upX && upY || downX && downY || upX && downY || downX && upY))
-        {
-
-            if (upY || upX || downY || downX)
             {
                 tempX = firstX;
                 firstX = secondX;
