@@ -12,6 +12,8 @@
 
 using namespace sf;
 
+const int CONST_SIZE = 192;
+
 class Game
 {
 
@@ -25,35 +27,54 @@ private:
 
     CardField cardField;
 
-    Sprite testSprite;
-    Texture testSpriteTexture;
+    Sprite tmpSprite;
+    Texture tmpSpriteTexture;
 
     /*Card textures*/
 
-    Texture redCardTexture;
-    Texture yellowCardTexture;
-    Texture greenCardTexture;
-    Texture emptyCardTexture;
+    Texture redTexture;
+    Texture yellowTexture;
+    Texture greenTexture;
+    Texture emptyTexture;
 
+    /*Beacons */
+    Sprite redBe;
+    Texture redBeTexture;
+
+    Sprite yellowBe;
+    Texture yellowBeTexture;
+
+    Sprite greenBe;
+    Texture greenBeTexture;
+
+    Sprite win;
+    Texture winTexture;
+    /*-------------------------------*/
     int gameStarted = 0;
+
+    int winIndexRed = 480;    // type == 1
+    int winIndexYellow = 864; // type == 2
+    int winIndexGreen = 1248; // type == 3
+
+    int red = 0, yellow = 0, green = 0;
 
     const Texture &textureByType(int type) const
     {
         if (type == 0)
         {
-            return emptyCardTexture;
+            return emptyTexture;
         }
         else if (type == 1)
         {
-            return redCardTexture;
+            return redTexture;
         }
         else if (type == 2)
         {
-            return yellowCardTexture;
+            return yellowTexture;
         }
         else
         {
-            return greenCardTexture;
+            return greenTexture;
         };
     };
 
@@ -82,8 +103,8 @@ private:
             leftX = card.getCardX();
             leftY = card.getCardY();
 
-            rightX = leftX + 192;
-            rightY = leftY + 192;
+            rightX = leftX + CONST_SIZE;
+            rightY = leftY + CONST_SIZE;
 
             if ((mousePosition.x <= rightX) && (mousePosition.x >= leftX) &&
                 (mousePosition.y <= rightY) && (mousePosition.y >= leftY))
@@ -120,97 +141,180 @@ private:
         Sprite second;
         second.setTexture(textureS);
 
-        std::cout << "\nSWAP 1 FROM --> " << firstId << " " << firstX << " " << firstY << "\n";
-        std::cout << "\nSWAP 2 FROM --> " << secondId << " " << secondX << " " << secondY << "\n";
+        std::cout << " TRY from: \n";
+        std::cout << "   card_1 id: " << firstId << " x: " << firstX << " y: " << firstY << "\n";
+        std::cout << "   card_2 id: " << secondId << " x: " << secondX << " y: " << secondY << "\n";
 
-        if (((firstX + 192) == secondX) ||
-            ((firstX - 192) == secondX) ||
-            ((firstY + 192) == secondY) ||
-            ((firstY - 192) == secondY))
+        bool upX = 0;
+        bool upY = 0;
+        bool downX = 0;
+        bool downY = 0;
+
+        // coefficients which help to protect from jumping over 1+ cards
+        double coef_x = 0;
+        double coef_y = 0;
+
+        coef_x = (firstX - secondX) / CONST_SIZE;
+        coef_y = (firstY - secondY) / CONST_SIZE;
+
+        if (((coef_x == 1 || coef_x == -1) && coef_y == 0) ||
+            (coef_x == 0 && (coef_y == 1 || coef_y == -1)))
         {
-            tempX = firstX;
-            firstX = secondX;
-            secondX = tempX;
+            std::cout << " SWAAAAAAAAP : \n";
+            std::cout << "   coef_x : " << coef_x << "\n";
+            std::cout << "   coef_y : " << coef_y << "\n";
 
-            tempY = firstY;
-            firstY = secondY;
-            secondY = tempY;
+            {
+                tempX = firstX;
+                firstX = secondX;
+                secondX = tempX;
 
-            cardFirst.changeCardPosition(firstX, firstY);
-            cardSecond.changeCardPosition(secondX, secondY);
+                tempY = firstY;
+                firstY = secondY;
+                secondY = tempY;
 
-            std::cout << "\nSWAP 1 TO--> " << firstX << " " << firstY << "\n";
-            std::cout << "\nSWAP 2 TO --> " << secondX << " " << secondY << "\n";
+                cardFirst.changeCardPosition(firstX, firstY);
+                cardSecond.changeCardPosition(secondX, secondY);
+                std::cout << " SUCCESS : \n";
+                std::cout << "   card_1 id: " << firstId << " x: " << firstX << " y: " << firstY << "\n";
+                std::cout << "   card_2 id: " << secondId << " x: " << secondX << " y: " << secondY << "\n";
 
-            // first.setPosition(firstX, firstY);
-            // second.setPosition(secondX, secondY);
+                first.setPosition({firstX, firstY});
+                second.setPosition({secondX, secondY});
 
-            // window->clear();
-            window->draw(first);
-            window->draw(second);
+                // window->clear();
+                window->draw(first);
+                window->draw(second);
+            }
+        }
+        else
+        {
+            std::cout << "<!> swap aborted <!>\n";
+        }
+    };
+
+    bool winCheck()
+    {
+        red = 0, yellow = 0, green = 0;
+        for (Card &card : cardPackClass.getCardPack())
+        {
+            if (card.getCardType() == 1 && card.getCardX() == winIndexRed)
+            {
+                red++;
+            }
+            else if (card.getCardType() == 2 && card.getCardX() == winIndexYellow)
+            {
+                yellow++;
+            }
+            else if (card.getCardType() == 3 && card.getCardX() == winIndexGreen)
+            {
+                green++;
+            }
+        };
+
+        if (red == 5 && yellow == 5 && green == 5)
+        {
+
+            return true;
+        }
+        return false;
+    };
+
+    void winDisplay(RenderWindow *window)
+    {
+        if (red % 5 == 0 && red != 0)
+        {
+            redBe.setPosition({460.0, 0.0});
+            window->draw(redBe);
+            std::cout << " . * + red complete * . +  \n";
+        }
+
+        if (yellow % 5 == 0 && yellow != 0)
+        {
+            yellowBe.setPosition({810.0, 0.0});
+            window->draw(yellowBe);
+            std::cout << " + * + yellow complete + . *   \n";
+        }
+
+        if (green % 5 == 0 && green != 0)
+        {
+            greenBe.setPosition({1160.0, 0.0});
+            window->draw(greenBe);
+            std::cout << " * + . green complete + * .   \n";
+        }
+
+        if (red % 5 == 0 && yellow % 5 == 0 && green % 5 == 0 && green != 0 && yellow != 0 && red != 0)
+        {
+            redBe.setPosition({460.0, 0.0});
+            window->draw(redBe);
+            yellowBe.setPosition({810.0, 0.0});
+            window->draw(yellowBe);
+            greenBe.setPosition({1160.0, 0.0});
+            window->draw(greenBe);
+
+            win.setPosition({0.0, 0.0});
+            window->draw(win);
+
+            std::cout << "\n   WIN WIN WIN   \n";
         }
     };
 
 public:
     Game()
     {
-        // set cards textures
-        redCardTexture.loadFromFile("card\\card_textures\\RedCard.png");
-        yellowCardTexture.loadFromFile("card\\card_textures\\YellowCard.png");
-        greenCardTexture.loadFromFile("card\\card_textures\\GreenCard.png");
-        emptyCardTexture.loadFromFile("card\\card_textures\\Empty4.png");
+        // set  textures
+        redTexture.loadFromFile("card\\card_textures\\RedCard.png");
+        yellowTexture.loadFromFile("card\\card_textures\\YellowCard_3.png");
+        greenTexture.loadFromFile("card\\card_textures\\GreenCard_2.png");
+        emptyTexture.loadFromFile("card\\card_textures\\Empty_3.png");
+
+        redBeTexture.loadFromFile("field\\beacon\\RedBeacon_.png");
+        yellowBeTexture.loadFromFile("field\\beacon\\YellowBeacon_.png");
+        greenBeTexture.loadFromFile("field\\beacon\\GreenBeacon_.png");
+        winTexture.loadFromFile("card\\card_textures\\win_screeen_1.png");
+
+        redBe.setTexture(redBeTexture);
+        yellowBe.setTexture(yellowBeTexture);
+        greenBe.setTexture(greenBeTexture);
+        win.setTexture(winTexture);
     }
 
     void launchGame()
     {
-        RenderWindow window(VideoMode().getDesktopMode(), "Three colours"); //, Style::Fullscreen
-
+        RenderWindow window(sf::VideoMode({1920, 1080}), "Three colours", Style::Close); // videomode, name, Style::Fullscreen
+                                                                                         //  VideoMode({1920, 1080})
         int idFirst = -1;
         int idSecond = -1;
-        int flag = 0;
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-
-        std::vector<int> fullPack = {0, 0, 0, 0, 0, 0,
-                                     1, 1, 1, 1, 1,
-                                     2, 2, 2, 2, 2,
-                                     3, 3, 3, 3, 3};
-
-        std::shuffle(fullPack.begin(), fullPack.end(), std::default_random_engine(seed));
-
-        for (int &x : fullPack)
-        {
-            Card card;
-            card.setCardType(x);
-            std::cout << card.getCardX();
-            cardPackClass.getCardPack().push_back(card);
-        }
 
         window.clear();
+        int flag = 0;
+
+        int check = 0;
 
         while (window.isOpen())
         {
-
-            window.draw(cardField.getSprite()); // draw background field
+            // draw background field
+            window.draw(cardField.getSprite());
 
             counter = 0;
 
-            // цикл для заполнения поля !игровыми! карточками
-            for (int y = 110; y < 1069; y = y + 192)
+            // show interactive cards
+            for (int y = 110; y < 1069; y = y + CONST_SIZE)
             {
-                for (int x = 480; x < 1438; x = x + 192)
+                for (int x = 480; x < 1438; x = x + CONST_SIZE)
                 {
                     if (!((y == 302 && (x == 672 || x == 1056)) ||
                           (y == 686 && (x == 672 || x == 1056))))
                     {
 
                         // add texture by type
-                        testSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
+                        tmpSprite.setTexture(textureByType(cardPackClass.getCardPack().at(counter).getCardType()));
 
-                     //   testSprite.setPosition(cardPackClass.getCardPack().at(counter).getCardX(),
-                                             //  cardPackClass.getCardPack().at(counter).getCardY());
+                        tmpSprite.setPosition({cardPackClass.getCardPack().at(counter).getCardX(),
+                                               cardPackClass.getCardPack().at(counter).getCardY()});
 
                         // рисуем карточки
-                        window.draw(testSprite);
+                        window.draw(tmpSprite);
 
                         counter = counter + 1;
                     }
@@ -219,45 +323,56 @@ public:
 
             Event event;
 
-            // получение координат мышки относительно окна игры
+            // get mouse coordinates releated to game window
             sf::Vector2i localPosition = sf::Mouse::getPosition(window);
 
             while (window.pollEvent(event))
             {
-
-                if (Mouse::isButtonPressed(Mouse::Left) && flag == 0)
+                if (check == false)
                 {
-                    std::cout << "2) " << flag << " " << idFirst << " " << idSecond << "\n";
-                    flag = 1;
-                }
-                else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 1)
-                {
-                    idFirst = getCardIdFromMouse(localPosition);
-                    if (idFirst != -1)
+                    if (Mouse::isButtonPressed(Mouse::Left) && flag == 0)
                     {
-                        idSecond = idFirst;
-                        flag = 2;
-                    }
-                }
-                else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
-                {
 
-                    idFirst = getCardIdFromMouse(localPosition);
-                    if (idFirst != -1 && idSecond != idFirst)
+                        flag = 1;
+                        std::cout << "START: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+                    }
+                    else if (!Mouse::isButtonPressed(Mouse::Left) && flag == 1)
                     {
-                        std::cout << "3) " << flag << " " << idFirst << " " << idSecond << "\n";
-
-                        swapCardsById(&window, idFirst, idSecond);
-                        flag = 0;
+                        idFirst = getCardIdFromMouse(localPosition);
+                        if (idFirst != -1)
+                        {
+                            idSecond = idFirst;
+                            flag = 2;
+                        }
+                        std::cout << " 1) first step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
                     }
-                };
+                    else if (Mouse::isButtonPressed(Mouse::Left) && flag == 2)
+                    {
 
-                // Закрыть окно
+                        idFirst = getCardIdFromMouse(localPosition);
+                        if (idFirst != -1 && idSecond != idFirst)
+                        {
+                            std::cout << " 2) second step: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+
+                            swapCardsById(&window, idFirst, idSecond);
+                            flag = 0;
+                            // std::cout << " after swap check: flag: " << flag << " id1: " << idFirst << " id2: " << idSecond << "\n";
+                            check = winCheck();
+                            // winCheck(&window);
+                        }
+                    };
+                }
+
+                // Close window
                 if (event.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape)))
                 {
                     window.close();
                 };
+
+                // check = winCheck();
             }
+
+            winDisplay(&window);
 
             window.display();
         };
