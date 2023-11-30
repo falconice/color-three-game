@@ -145,10 +145,6 @@ private:
         std::cout << "   card_1 id: " << firstId << " x: " << firstX << " y: " << firstY << "\n";
         std::cout << "   card_2 id: " << secondId << " x: " << secondX << " y: " << secondY << "\n";
 
-        bool upX = 0;
-        bool upY = 0;
-        bool downX = 0;
-        bool downY = 0;
 
         // coefficients which help to protect from jumping over 1+ cards
         double coef_x = 0;
