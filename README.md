@@ -1,19 +1,4 @@
 # Three color game
-## How to build and launch
-1. Download and build [SFML](https://www.sfml-dev.org/download.php). (Assure that SFML compatible with your compiler).
-2.  Add sfml dll's to the project root directory. 
-3.  Compile with command :
-``` bash
-g++.exe -g main.cpp -o main.exe \
--I path_to_sfml/include  \
--L path_to_sfml_binaries/lib \
--lsfml-graphics -lsfml-window \
--lsfml-audio -lsfml-network \
--lsfml-system
-
-```
-4.  Launch the exe-file
-5.  Enjoy!
 
 ## Description
 Game started in 2021, finished in 2023.
@@ -42,3 +27,18 @@ It is required, by moving the cards, to put them in three vertical rows, accordi
 ### Win banner
 ![](README_img/Win.png)
 
+## How to build and launch
+1. Download and build [SFML](https://www.sfml-dev.org/download.php). (Assure that SFML compatible with your compiler).
+2.  Add sfml dll's to the project root directory. 
+3.  Compile with command :
+``` bash
+g++.exe -g main.cpp -o main.exe \
+-I path_to_sfml/include  \
+-L path_to_sfml_binaries/lib \
+-lsfml-graphics -lsfml-window \
+-lsfml-audio -lsfml-network \
+-lsfml-system
+
+```
+4.  Launch the exe-file
+5.  Enjoy!
