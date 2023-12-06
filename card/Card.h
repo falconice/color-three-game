@@ -52,11 +52,11 @@ public:
         }
         else if (type == 2)
         {
-            this->setCardTexture("card\\card_textures\\YellowCard.png");
+            this->setCardTexture("card\\card_textures\\YellowCard_3.png");
         }
         else if (type == 3)
         {
-            this->setCardTexture("card\\card_textures\\GreenCard.png");
+            this->setCardTexture("card\\card_textures\\GreenCard_2.png");
         };
     };
 
